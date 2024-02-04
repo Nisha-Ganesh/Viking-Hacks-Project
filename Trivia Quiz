@@ -1,0 +1,94 @@
+import random
+
+global score
+score = 0
+
+def quiz(questions, answers, section_name):
+    global score
+    global sections
+    lives = 2
+
+    selected_questions = set()
+
+    print(f"Welcome to the {section_name} section of the quiz!")
+    print(f'You have {lives} lives to answer all the questions correctly.')
+    question_num = 3
+    for i in range(3):  # Adjusted to 3 iterations to ask 2 random questions
+        
+        available_questions = set(range(len(questions))) - selected_questions
+        if not available_questions:
+            print("All questions in this section have been asked. Moving on to the next section.")
+            break
+
+        question_index = random.choice(list(available_questions))
+        selected_questions.add(question_index)
+
+        print(f"\n{section_name}: {questions[question_index]}")
+        ans = input("Answer: ").strip().lower()
+
+        if ans == answers[question_index].lower():
+          print("Correct!")
+          question_num -= 1
+          score += 1
+          if question_num <= 0:
+            if section_name == "Trivia":
+              print("Thank you for participating in the Trivia Quiz!")
+              return False
+            else:
+              continue
+        else:
+          print(f"That is incorrect! The correct answer is: {answers[question_index]}")
+          lives -= 1
+          if lives > 0:
+            print(f'You have {lives} lives remaining.')
+            continue
+          else:
+            print(f"Your score was: {score}")
+            score = 0
+            print("Now your score is set back to 0")
+          if section_name == "Trivia":
+            break
+          user_prompt = input("Do you want to restart the section(restart), move on to the next section(next), or quit(quit)?  ").lower()
+
+          if user_prompt == "restart":
+            return True
+          elif user_prompt == "next":
+            return False
+          elif user_prompt == "quit":
+            print(f"Thank you for playing! Your final score is {score}")
+            exit()
+
+    print(f"Your current score is: {score}")
+    user_correct = input("Do you want to move on to the next section(next), or quit(quit)? ").lower()
+    if user_correct == "next":
+        return False
+    elif user_correct == "quit":
+        print(f"Thank you for playing! Your final score is {score}")
+        exit()
+
+def main():
+  global sections
+  math_section = ["What is 2 * 5", "What is 6 * 27", "What is 165/33", "What is 96/8", "What is x + 3 = 6. Solve for x", "What is 5x - 7 = 8. Solve for x", "What is x^2 - 4 = 0. Solve for x"]
+  math_answers = ["10", "162", "5", "12", "3", "3", "2"]
+
+  geography_section = ["What is the tallest mountain in the world?", "What is the longest river in the world?", "Which country is home to the Eiffel Tower?", "Where is the coldest place on Earth?", "What’s the capital city of Canada?", "Where would you find the Statue of Liberty?", "What is the capital city of the American state of Arizona?"]
+  geography_answers = ["Mount Everest", "Nile", "France", "Antarctica", "Ottawa", "New York", "Phoenix"]
+
+  trivia_section = ["What does www stand for?", "Who painted the Mona Lisa?", "What was the original purpose of the tiny pocket in jeans?", "What does SPF in sunscreen stand for?", "Who was the first woman pilot to fly solo across the Atlantic?", "When did the first iPhone come out?", "In the Catholic Church, the Bishop of Rome is a title more commonly known as what?"]
+  trivia_answers = ["World wide web", "Leonardo da Vinci", "Pocket watch", "Sun protection factor", "Amelia Earhart", "2007", "The pope"]
+
+  sections = [
+        (math_section, math_answers, "Math"),
+        (geography_section, geography_answers, "Geography"),
+        (trivia_section, trivia_answers, "Trivia")
+    ]
+
+  for section in sections:
+      restart = True
+      while restart:
+          restart = quiz(section[0], section[1], section[2])
+
+
+if __name__ == "__main__":
+  main()
+print("Thank you for playing! Your final score is", score)
